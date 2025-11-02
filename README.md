@@ -29,8 +29,8 @@ This fork adds several significant improvements:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/waefrebeorn/Godot-MCP.git
-cd Godot-MCP
+git clone https://github.com/nguyenchiencong/godot-mcp.git
+cd godot-mcp
 ```
 
 ### 2. Set Up the MCP Server
@@ -241,7 +241,7 @@ This fork adds several new files to the original project:
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request to the [GitHub repository](https://github.com/waefrebeorn/Godot-MCP).
+Contributions are welcome! Please feel free to submit a Pull Request to the [GitHub repository](https://github.com/waefrebeorn/godot-mcp).
 
 ## Documentation
 
