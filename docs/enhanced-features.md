@@ -26,29 +26,44 @@ These features make the integration between Claude and Godot more seamless and p
 
 ## Complete Scene Tree Access
 
-The `get_full_scene_tree` command provides a complete hierarchical representation of your entire scene.
+Use `get_editor_scene_structure` to retrieve the current scene hierarchy. Pass optional flags to control how much data comes back.
 
 ### Command Details
 
 ```typescript
-// Command: get_full_scene_tree
-// Parameters: None
+// Command: get_editor_scene_structure
+// Parameters (all optional):
+//   include_properties: boolean   // include editor-visible properties such as position/rotation
+//   include_scripts: boolean      // include attached script metadata
+//   max_depth: number             // limit recursion depth (0 = only root)
 ```
 
 ### Usage
 
+Retrieve a lightweight hierarchy:
+
 ```
-@mcp godot-mcp run get_full_scene_tree
+@mcp godot-mcp run get_editor_scene_structure
+```
+
+Request the full structure, including editor properties and script information:
+
+```
+@mcp godot-mcp run get_editor_scene_structure --include_properties true --include_scripts true
+```
+
+Limit traversal to the first two levels:
+
+```
+@mcp godot-mcp run get_editor_scene_structure --max_depth 1
 ```
 
 ### Response
 
-The command returns a nested structure of all nodes in the scene, including:
-- Node names and types
-- Node paths
-- Key properties
-- Script attachments
-- Child relationships
+The command returns:
+- `scene_path`, `root_node_name`, `root_node_type`
+- `structure`: a nested hierarchy containing names, types, paths
+- Optional `properties` and `script` blocks when the corresponding flags are enabled
 
 ### Example Use Cases
 
@@ -173,7 +188,7 @@ Access Godot's debug output directly, allowing Claude to analyze runtime behavio
 ### Example 1: Setting Up a Complete Scene
 
 ```
-@mcp godot-mcp run get_full_scene_tree
+@mcp godot-mcp run get_editor_scene_structure --include_properties true --include_scripts true
 
 I want to add a health system to my game. Please first analyze my scene structure, then add a health manager node to the scene, and help me create a script with damage and healing functions using the standard script tools.
 ```

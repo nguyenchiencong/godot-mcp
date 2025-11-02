@@ -6,17 +6,14 @@ var _websocket_server = null
 
 func process_command(client_id: int, command_type: String, params: Dictionary, command_id: String) -> bool:
 	match command_type:
-		"get_full_scene_tree":
-			_handle_get_full_scene_tree(client_id, params, command_id)
+		"get_editor_scene_structure":
+			_handle_get_editor_scene_structure(client_id, params, command_id)
 			return true
 		"get_debug_output":
 			_handle_get_debug_output(client_id, params, command_id)
 			return true
 		"update_node_transform":
 			_handle_update_node_transform(client_id, params, command_id)
-			return true
-		"get_current_scene_structure":
-			_handle_get_current_scene_structure(client_id, params, command_id)
 			return true
 	
 	# Command not handled by this processor
@@ -29,74 +26,14 @@ func _get_editor_interface():
 		return plugin_instance.get_editor_interface()
 	return null
 
-# ---- Full Scene Tree Commands ----
+# ---- Scene Structure Commands ----
 
-func _handle_get_full_scene_tree(client_id: int, _params: Dictionary, command_id: String) -> void:
-	var result = get_full_scene_tree()
-	
+func _handle_get_editor_scene_structure(client_id: int, params: Dictionary, command_id: String) -> void:
+	var options = _build_scene_options(params, false, false)
+	var result = _build_scene_structure_result(options)
 	_send_success(client_id, result, command_id)
 
-func get_full_scene_tree() -> Dictionary:
-	var result = {}
-	var editor_interface = _get_editor_interface()
-	if editor_interface:
-		var root = editor_interface.get_edited_scene_root()
-		if root:
-			result = _walk_node(root)
-	return result
-
-func _walk_node(node):
-	var info = {
-		"name": node.name,
-		"type": node.get_class(),
-		"path": node.get_path(),
-		"properties": {},
-		"children": []
-	}
-	
-	# Get some common properties if they exist
-	if node.has_method("get_property_list"):
-		var props = node.get_property_list()
-		for prop in props:
-			# Filter to avoid too much data
-			if prop.usage & PROPERTY_USAGE_EDITOR and not (prop.usage & PROPERTY_USAGE_CATEGORY):
-				# Only include commonly useful properties
-				if prop.name in ["position", "rotation", "scale", "text", "visible"]:
-					info["properties"][prop.name] = node.get(prop.name)
-	
-	# Get script information if available
-	var script = node.get_script()
-	if script:
-		# Fix: Use safe access for script properties
-		var script_path = ""
-		var class_name_str = ""
-		
-		if typeof(script) == TYPE_OBJECT:
-			if script.has_method("get_path") or "resource_path" in script:
-				script_path = script.resource_path if "resource_path" in script else ""
-			
-			if script.has_method("get_instance_base_type"):
-				class_name_str = script.get_instance_base_type()
-		
-		info["script"] = {
-			"path": script_path,
-			"class_name": class_name_str
-		}
-	
-	# Recurse for children
-	for child in node.get_children():
-		info["children"].append(_walk_node(child))
-	
-	return info
-
-# ---- Current Scene Structure Commands ----
-
-func _handle_get_current_scene_structure(client_id: int, _params: Dictionary, command_id: String) -> void:
-	var result = get_current_scene_structure()
-	
-	_send_success(client_id, result, command_id)
-
-func get_current_scene_structure() -> Dictionary:
+func _build_scene_structure_result(options: Dictionary) -> Dictionary:
 	var editor_interface = _get_editor_interface()
 	if not editor_interface:
 		return { "error": "Could not access EditorInterface" }
@@ -105,25 +42,99 @@ func get_current_scene_structure() -> Dictionary:
 	if not root:
 		return { "error": "No scene is currently being edited" }
 	
-	# Fix: Safely handle scene_file_path
 	var scene_path = ""
 	
-	# Use direct property access with safety checks
 	if "scene_file_path" in root:
 		scene_path = root.scene_file_path
-		# Additional check to ensure it's a valid string
 		if typeof(scene_path) != TYPE_STRING:
-			scene_path = str(scene_path)  # Convert to string
+			scene_path = str(scene_path)
 	
 	if scene_path.is_empty():
 		scene_path = "Unsaved Scene"
 	
 	return {
+		"scene_path": scene_path,
 		"path": scene_path,
 		"root_node_type": root.get_class(),
 		"root_node_name": root.name,
-		"structure": _walk_node(root)
+		"structure": _build_node_info(root, options, 0)
 	}
+
+func _build_scene_options(params: Dictionary, include_properties_default: bool, include_scripts_default: bool) -> Dictionary:
+	var include_properties = include_properties_default
+	if params.has("include_properties"):
+		include_properties = _coerce_bool(params.get("include_properties"), include_properties_default)
+	
+	var include_scripts = include_scripts_default
+	if params.has("include_scripts"):
+		include_scripts = _coerce_bool(params.get("include_scripts"), include_scripts_default)
+	
+	var max_depth = -1
+	if params.has("max_depth"):
+		max_depth = int(params.get("max_depth"))
+	
+	return {
+		"include_properties": include_properties,
+		"include_scripts": include_scripts,
+		"max_depth": max_depth
+	}
+
+func _coerce_bool(value, default: bool) -> bool:
+	if typeof(value) == TYPE_BOOL:
+		return value
+	if typeof(value) == TYPE_STRING:
+		var lowered = value.to_lower()
+		if lowered == "true":
+			return true
+		if lowered == "false":
+			return false
+	return bool(value) if value != null else default
+
+func _build_node_info(node: Node, options: Dictionary, depth: int) -> Dictionary:
+	var info = {
+		"name": node.name,
+		"type": node.get_class(),
+		"path": node.get_path(),
+		"children": []
+	}
+	
+	if options.get("include_properties", false):
+		var properties = {}
+		if node.has_method("get_property_list"):
+			var props = node.get_property_list()
+			for prop in props:
+				if prop.usage & PROPERTY_USAGE_EDITOR and not (prop.usage & PROPERTY_USAGE_CATEGORY):
+					if prop.name in ["position", "rotation", "scale", "text", "visible"]:
+						properties[prop.name] = node.get(prop.name)
+		if properties.size() > 0:
+			info["properties"] = properties
+	
+	if options.get("include_scripts", false):
+		var script = node.get_script()
+		if script:
+			var script_path = ""
+			var class_name_str = ""
+			
+			if typeof(script) == TYPE_OBJECT:
+				if script.has_method("get_path") or "resource_path" in script:
+					script_path = script.resource_path if "resource_path" in script else ""
+				
+				if script.has_method("get_instance_base_type"):
+					class_name_str = script.get_instance_base_type()
+			
+			info["script"] = {
+				"path": script_path,
+				"class_name": class_name_str
+			}
+	
+	var max_depth = options.get("max_depth", -1)
+	if max_depth >= 0 and depth >= max_depth:
+		return info
+	
+	for child in node.get_children():
+		info["children"].append(_build_node_info(child, options, depth + 1))
+	
+	return info
 
 # ---- Debug Output Commands ----
 

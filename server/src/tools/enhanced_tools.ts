@@ -8,35 +8,50 @@ import { MCPTool } from '../utils/types.js';
  */
 export const enhancedTools: MCPTool[] = [
   {
-    name: 'get_full_scene_tree',
-    description: 'Get the complete scene tree hierarchy of the current scene',
-    parameters: z.object({}),
-    execute: async (): Promise<string> => {
+    name: 'get_editor_scene_structure',
+    description: 'Get the current scene hierarchy with optional detail flags',
+    parameters: z.object({
+      include_properties: z.boolean().optional()
+        .describe('Include common editor properties (position, rotation, etc.)'),
+      include_scripts: z.boolean().optional()
+        .describe('Include attached script information'),
+      max_depth: z.number().int().min(0).optional()
+        .describe('Limit traversal depth (0 = only root)')
+    }),
+    execute: async ({ include_properties, include_scripts, max_depth }): Promise<string> => {
       const godot = getGodotConnection();
-      
+
       try {
-        const result = await godot.sendCommand('get_full_scene_tree', {});
-        
-        if (!result || Object.keys(result).length === 0) {
+        const params: Record<string, unknown> = {};
+        if (include_properties !== undefined) params.include_properties = include_properties;
+        if (include_scripts !== undefined) params.include_scripts = include_scripts;
+        if (max_depth !== undefined) params.max_depth = max_depth;
+
+        const result = await godot.sendCommand('get_editor_scene_structure', params);
+
+        if (result.error) {
+          return `Scene structure unavailable: ${result.error}`;
+        }
+
+        if (!result.structure || Object.keys(result.structure).length === 0) {
           return 'No scene is currently open or the scene is empty.';
         }
-        
-        // Format the scene tree
+
         const formatNode = (node: any, depth = 0): string => {
           const indent = ' '.repeat(depth * 2);
           let output = `${indent}${node.name} (${node.type})`;
-          
+
           if (node.children && node.children.length > 0) {
             output += '\n';
             output += node.children.map((child: any) => formatNode(child, depth + 1)).join('\n');
           }
-          
+
           return output;
         };
-        
-        return `Scene Tree:\n${formatNode(result)}`;
+
+        return `Current Scene: ${result.path}\nRoot Node: ${result.root_node_name} (${result.root_node_type})\n\nScene Tree:\n${formatNode(result.structure)}`;
       } catch (error) {
-        throw new Error(`Failed to get scene tree: ${(error as Error).message}`);
+        throw new Error(`Failed to get scene structure: ${(error as Error).message}`);
       }
     },
   },
@@ -58,27 +73,6 @@ export const enhancedTools: MCPTool[] = [
         return `Debug Output:\n${result.output}`;
       } catch (error) {
         throw new Error(`Failed to get debug output: ${(error as Error).message}`);
-      }
-    },
-  },
-  
-  {
-    name: 'get_current_scene_structure',
-    description: 'Get detailed information about the current scene structure',
-    parameters: z.object({}),
-    execute: async (): Promise<string> => {
-      const godot = getGodotConnection();
-      
-      try {
-        const result = await godot.sendCommand('get_current_scene_structure', {});
-        
-        if (!result.path) {
-          return 'No scene is currently open.';
-        }
-        
-        return `Current Scene: ${result.path}\nRoot Node: ${result.root_node_name} (${result.root_node_type})`;
-      } catch (error) {
-        throw new Error(`Failed to get scene structure: ${(error as Error).message}`);
       }
     },
   },

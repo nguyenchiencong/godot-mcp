@@ -52,7 +52,10 @@ export const sceneStructureResource: Resource = {
         
         try {
             // Call a command on the Godot side to get current scene structure
-            const result = await godot.sendCommand('get_current_scene_structure', {});
+            const result = await godot.sendCommand('get_editor_scene_structure', {
+                include_properties: true,
+                include_scripts: true,
+            });
             
             return {
                 text: JSON.stringify(result)
@@ -76,10 +79,13 @@ export const fullSceneTreeResource: Resource = {
     
     try {
       // Call a command on the Godot side to get the full scene tree
-      const result = await godot.sendCommand('get_full_scene_tree');
+      const result = await godot.sendCommand('get_editor_scene_structure', {
+        include_properties: true,
+        include_scripts: true,
+      });
       
       return {
-        text: JSON.stringify(result)
+        text: JSON.stringify(result.structure ?? result)
       };
     } catch (error) {
       console.error('Error fetching full scene tree:', error);

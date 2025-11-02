@@ -18,7 +18,7 @@ A comprehensive integration between Godot Engine and AI assistants using the Mod
 
 This fork adds several significant improvements:
 
-- **Complete Scene Tree Visibility**: Retrieve the entire scene hierarchy with `get_full_scene_tree`
+- **Complete Scene Tree Visibility**: Retrieve the entire scene hierarchy with `get_editor_scene_structure`
 - **Dynamic Script Access**: Read and write any script by path with dynamic resource templates
 - **Asset Management**: Query and organize project assets by type (images, audio, models, etc.)
 - **Debug Output Access**: Retrieve runtime debug logs from the Godot editor
@@ -190,7 +190,7 @@ Reset all enemy nodes' health to 100.
 - `execute_editor_script` - Executes arbitrary GDScript code in the Godot editor context
 
 #### Enhanced Commands (NEW)
-- `get_full_scene_tree` - Gets complete hierarchical scene structure
+- `get_editor_scene_structure` - Returns the current scene hierarchy with optional `include_properties`, `include_scripts`, and `max_depth` filters
 - `get_debug_output` - Retrieves debug logs from editor
 - `update_node_transform` - Updates node position, rotation, and scale
 - `list_assets_by_type` - Lists project assets by type

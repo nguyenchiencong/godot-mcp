@@ -89,7 +89,7 @@ func _handle_command(client_id: int, command: Dictionary) -> void:
 	print("Processing command: %s" % command_type)
 	
 	# Special handling for enhanced commands
-	var enhanced_commands = ["get_full_scene_tree", "get_debug_output", "update_node_transform", "get_current_scene_structure"]
+	var enhanced_commands = ["get_editor_scene_structure", "get_debug_output", "update_node_transform"]
 	if command_type in enhanced_commands:
 		# Try to find enhanced commands processor first
 		for processor in _command_processors:
