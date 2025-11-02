@@ -121,6 +121,12 @@ Please analyze this player script and suggest improvements.
 ```
 
 ```
+@mcp godot-mcp read godot://assets/images
+
+List every image asset so I can review what art is already in the project.
+```
+
+```
 @mcp godot-mcp run list_assets_by_type --type images
 
 Show me all the images in my project and help me organize them better.

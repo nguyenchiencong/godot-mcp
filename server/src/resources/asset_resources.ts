@@ -1,4 +1,4 @@
-import { Resource } from 'fastmcp';
+import { Resource, ResourceTemplate } from 'fastmcp';
 import { getGodotConnection } from '../utils/godot_connection.js';
 
 type AssetType = 'images' | 'audio' | 'fonts' | 'models' | 'shaders' | 'resources' | 'all';
@@ -68,6 +68,38 @@ export const assetListResource: Resource = {
       };
     } catch (error) {
       console.error('Error fetching asset list:', error);
+      throw error;
+    }
+  }
+};
+
+/**
+ * Template resource for retrieving assets filtered by type.
+ */
+export const assetByTypeResourceTemplate: ResourceTemplate = {
+  uriTemplate: 'godot/assets/{type}',
+  name: 'Typed Asset List',
+  mimeType: 'application/json',
+  arguments: [
+    {
+      name: 'type',
+      description: 'Asset category (images, audio, fonts, models, shaders, resources, all)'
+    }
+  ],
+  async load({ type }) {
+    const godot = getGodotConnection();
+
+    try {
+      const incomingType = (type ?? 'all').toLowerCase();
+      const validTypes: AssetType[] = ['images', 'audio', 'fonts', 'models', 'shaders', 'resources', 'all'];
+      const assetType = (validTypes.includes(incomingType as AssetType) ? incomingType : 'all') as AssetType;
+
+      const result = await godot.sendCommand('list_assets_by_type', { type: assetType });
+      return {
+        text: JSON.stringify(result)
+      };
+    } catch (error) {
+      console.error('Error fetching assets by type:', error);
       throw error;
     }
   }

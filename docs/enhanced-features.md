@@ -144,6 +144,10 @@ Query and organize project assets by type, making it easier to manage game resou
 @mcp godot-mcp run list_assets_by_type --type images
 ```
 
+```
+@mcp godot-mcp read godot://assets/images
+```
+
 ### Response
 
 Returns a structured overview of all assets of the specified type, including:

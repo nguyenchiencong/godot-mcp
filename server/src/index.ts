@@ -18,7 +18,8 @@ import {
 import {
   scriptResource,
   scriptListResource,
-  scriptMetadataResource
+  scriptMetadataResource,
+  scriptByPathResourceTemplate
 } from './resources/script_resources.js';
 import {
   projectStructureResource,
@@ -30,7 +31,7 @@ import {
   selectedNodeResource,
   currentScriptResource
 } from './resources/editor_resources.js';
-import { assetListResource } from './resources/asset_resources.js';
+import { assetListResource, assetByTypeResourceTemplate } from './resources/asset_resources.js';
 import { debugOutputResource } from './resources/debug_resources.js';
 
 /**
@@ -76,6 +77,8 @@ async function main() {
   server.addResource(fullSceneTreeResource);
   server.addResource(debugOutputResource);
   server.addResource(assetListResource);
+  server.addResourceTemplate(scriptByPathResourceTemplate);
+  server.addResourceTemplate(assetByTypeResourceTemplate);
 
   console.error('All resources and tools registered');
 

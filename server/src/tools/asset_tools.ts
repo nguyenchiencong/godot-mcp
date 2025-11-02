@@ -28,14 +28,14 @@ export const assetTools: MCPTool[] = [
           return `No ${assetType} assets found in the project.`;
         }
         
-        const fileList = result.files.slice(0, 10).join('\n- ');
-        let summary = `Found ${assetCount} ${assetType} assets in the project.\n\nFirst 10 assets:\n- ${fileList}`;
-        
-        if (assetCount > 10) {
-          summary += `\n\n(${assetCount - 10} more not shown)`;
-        }
-        
-        return summary;
+        const fileList = result.files.join('\n- ');
+
+        return [
+          `Found ${assetCount} ${assetType} assets in the project.`,
+          '',
+          'Assets:',
+          `- ${fileList}`
+        ].join('\n');
       } catch (error) {
         throw new Error(`Failed to list assets: ${(error as Error).message}`);
       }
@@ -62,14 +62,14 @@ export const assetTools: MCPTool[] = [
           return `No files with extensions ${extensionStr} found in the project.`;
         }
         
-        const fileList = result.files.slice(0, 10).join('\n- ');
-        let summary = `Found ${fileCount} files with extensions ${extensionStr} in the project.\n\nFirst 10 files:\n- ${fileList}`;
-        
-        if (fileCount > 10) {
-          summary += `\n\n(${fileCount - 10} more not shown)`;
-        }
-        
-        return summary;
+        const fileList = result.files.join('\n- ');
+
+        return [
+          `Found ${fileCount} files with extensions ${extensionStr} in the project.`,
+          '',
+          'Files:',
+          `- ${fileList}`
+        ].join('\n');
       } catch (error) {
         throw new Error(`Failed to list project files: ${(error as Error).message}`);
       }
