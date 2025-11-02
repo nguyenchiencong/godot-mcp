@@ -22,8 +22,7 @@ Use this document to craft effective prompts when instructing an LLM to interact
 |------|---------|------------|----------------|
 | `create_script` | Create a script file, optionally attaching it to a node. | `script_path` (string), `content` (string), `node_path` (optional string) | “Create `res://scripts/health_manager.gd` and attach it to `./World/HealthManager`.” |
 | `edit_script` | Replace the contents of an existing script. | `script_path` (string), `content` (string) | “Update `res://scripts/player.gd` with this revised code.” |
-| `get_script` | Fetch script source based on file path or node attachment. | `script_path` (optional string), `node_path` (optional string) | “Show me the script attached to `./Player`.” |
-| `create_script_template` | Generate a boilerplate GDScript template locally. | `class_name` (optional string), `extends_type` (string), `include_ready` (bool), `include_process` (bool), `include_input` (bool), `include_physics` (bool) | “Generate a template for a `Node2D` with `_ready` and `_process` stubs.” |
+| `get_script` | Fetch script source based on file path or node attachment. | `script_path` (optional string), `node_path` (optional string) | "Show me the script attached to `./Player`." |
 
 ---
 

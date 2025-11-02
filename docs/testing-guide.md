@@ -79,15 +79,6 @@ All examples assume:
   ```
 - **Expected Outcome**: Confirmation message; file contents update.
 
-### create_script_template
-- **Command**:
-  ```shell
-  @mcp godot-mcp run create_script_template --class_name "MyHelper" --extends_type "Node" --include_ready true --include_process true
-  ```
-- **Expected Outcome**: Generated template returned inline.
-
----
-
 ## Editor Tools
 
 ### execute_editor_script
@@ -182,4 +173,3 @@ All examples assume:
 
 - Delete temporary nodes or scripts created during testing to keep the project tidy.
 - If you created new assets or scenes solely for testing, remove or revert them as appropriate.
-

@@ -21,15 +21,6 @@ interface GetScriptParams {
   node_path?: string;
 }
 
-interface CreateScriptTemplateParams {
-  class_name?: string;
-  extends_type: string;
-  include_ready: boolean;
-  include_process: boolean;
-  include_input: boolean;
-  include_physics: boolean;
-}
-
 /**
  * Definition for script tools - operations that manipulate GDScript files
  */
@@ -115,66 +106,6 @@ export const scriptTools: MCPTool[] = [
       } catch (error) {
         throw new Error(`Failed to get script: ${(error as Error).message}`);
       }
-    },
-  },
-
-  {
-    name: 'create_script_template',
-    description: 'Generate a GDScript template with common boilerplate',
-    parameters: z.object({
-      class_name: z.string().optional()
-        .describe('Optional class name for the script'),
-      extends_type: z.string().default('Node')
-        .describe('Base class that this script extends (e.g. "Node", "Node2D", "Control")'),
-      include_ready: z.boolean().default(true)
-        .describe('Whether to include the _ready() function'),
-      include_process: z.boolean().default(false)
-        .describe('Whether to include the _process() function'),
-      include_input: z.boolean().default(false)
-        .describe('Whether to include the _input() function'),
-      include_physics: z.boolean().default(false)
-        .describe('Whether to include the _physics_process() function'),
-    }),
-    execute: async ({ 
-      class_name, 
-      extends_type, 
-      include_ready, 
-      include_process, 
-      include_input, 
-      include_physics 
-    }: CreateScriptTemplateParams): Promise<string> => {
-      // Generate the template locally without needing to call Godot
-      let template = '';
-      
-      // Add class_name if provided
-      if (class_name) {
-        template += `class_name ${class_name}\n`;
-      }
-      
-      // Add extends
-      template += `extends ${extends_type}\n\n`;
-      
-      // Add common lifecycle methods
-      if (include_ready) {
-        template += `func _ready():\n\tpass\n\n`;
-      }
-      
-      if (include_process) {
-        template += `func _process(delta):\n\tpass\n\n`;
-      }
-      
-      if (include_physics) {
-        template += `func _physics_process(delta):\n\tpass\n\n`;
-      }
-      
-      if (include_input) {
-        template += `func _input(event):\n\tpass\n\n`;
-      }
-      
-      // Remove trailing newlines
-      template = template.trimEnd();
-      
-      return `Generated GDScript template:\n\n\`\`\`gdscript\n${template}\n\`\`\``;
     },
   },
 ];

@@ -114,22 +114,6 @@ Get the content of a GDScript file.
 Show me the script attached to the node at "./Player".
 ```
 
-### create_script_template
-Generate a GDScript template with common boilerplate.
-
-**Parameters:**
-- `class_name` (optional) - Optional class name for the script
-- `extends_type` - Base class that this script extends (default: "Node")
-- `include_ready` - Whether to include the _ready() function (default: true)
-- `include_process` - Whether to include the _process() function (default: false)
-- `include_input` - Whether to include the _input() function (default: false)
-- `include_physics` - Whether to include the _physics_process() function (default: false)
-
-**Example:**
-```
-Create a script template for a KinematicBody2D with process and input functions.
-```
-
 ## Editor Tools
 
 ### execute_editor_script

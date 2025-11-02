@@ -19,9 +19,6 @@ func process_command(client_id: int, command_type: String, params: Dictionary, c
 		"get_current_script":
 			_get_current_script(client_id, params, command_id)
 			return true
-		"create_script_template":
-			_create_script_template(client_id, params, command_id)
-			return true
 	return false  # Command not handled
 
 # Add this function to help find script files
@@ -348,42 +345,5 @@ func _get_current_script(client_id: int, params: Dictionary, command_id: String)
 	_send_success(client_id, {
 		"script_found": true,
 		"script_path": script_path,
-		"content": content
-	}, command_id)
-
-func _create_script_template(client_id: int, params: Dictionary, command_id: String) -> void:
-	var extends_type = params.get("extends_type", "Node")
-	var class_name_str = params.get("class_name", "")
-	var include_ready = params.get("include_ready", true)
-	var include_process = params.get("include_process", false)
-	var include_physics = params.get("include_physics", false)
-	var include_input = params.get("include_input", false)
-	
-	# Generate script content
-	var content = "extends " + extends_type + "\n\n"
-	
-	if not class_name_str.is_empty():
-		content += "class_name " + class_name_str + "\n\n"
-	
-	# Add variables section placeholder
-	content += "# Member variables here\n\n"
-	
-	# Add ready function
-	if include_ready:
-		content += "func _ready():\n\tpass\n\n"
-	
-	# Add process function
-	if include_process:
-		content += "func _process(delta):\n\tpass\n\n"
-	
-	# Add physics process function
-	if include_physics:
-		content += "func _physics_process(delta):\n\tpass\n\n"
-	
-	# Add input function
-	if include_input:
-		content += "func _input(event):\n\tpass\n\n"
-	
-	_send_success(client_id, {
 		"content": content
 	}, command_id)
