@@ -10,7 +10,9 @@ This document provides a reference for the commands available through the Godot 
 - [Scene Tools](#scene-tools)
 - [Asset Tools](#asset-tools)
 - [Enhanced Tools](#enhanced-tools)
+- [Resource Templates](#resource-templates)
 - [Using Commands with Claude](#using-commands-with-claude)
+- [Usage Examples](#usage-examples)
 
 ## Node Tools
 
@@ -263,14 +265,41 @@ Show me every *.tscn file in the project.
 Return the current scene hierarchy with optional detail flags.
 
 **Parameters:**
-- `include_properties` (optional, default `false`) - Include editor-visible properties such as position/rotation
-- `include_scripts` (optional, default `false`) - Include attached script metadata
-- `max_depth` (optional) - Limit traversal depth (`0` = only root)
+- `include_properties` (optional, default `false`) – include editor-visible properties such as position/rotation.
+- `include_scripts` (optional, default `false`) – include attached script metadata for each node.
+- `max_depth` (optional) – limit recursion depth (`0` = only root).
 
-**Example:**
+**Command Details**
+```typescript
+// Command: get_editor_scene_structure
+// Parameters (all optional):
+//   include_properties: boolean
+//   include_scripts: boolean
+//   max_depth: number  // 0 = only root
 ```
-Dump the entire scene tree including properties so I can review the layout.
+
+**Usage**
 ```
+@mcp godot-mcp run get_editor_scene_structure
+```
+
+```
+@mcp godot-mcp run get_editor_scene_structure --include_properties true --include_scripts true
+```
+
+```
+@mcp godot-mcp run get_editor_scene_structure --max_depth 1
+```
+
+**Response Contains**
+- `scene_path`, `root_node_name`, `root_node_type`.
+- `structure`: nested hierarchy (`name`, `type`, `path`, child array).
+- Optional `properties` and `script` blocks when the corresponding flags are enabled.
+
+**Use Cases**
+- Audit scene layout before making structural edits.
+- Generate summaries for documentation or code review.
+- Quickly locate nodes or scripts in complex projects.
 
 ### get_debug_output
 Fetch the Godot editor's debug console output.
@@ -282,6 +311,43 @@ Fetch the Godot editor's debug console output.
 Show me the latest debug logs from the editor.
 ```
 
+**Use Cases:**
+- Investigate crash/warning messages while iterating on features.
+- Review custom `print()` output triggered through `execute_editor_script`.
+- Share runtime diagnostics with collaborators or automated agents.
+
+### update_node_transform
+Adjust a node’s position, rotation, or scale from the editor.
+
+**Parameters:**
+- `node_path` – Path to the node (e.g. `"./Player"`).
+- `position` (optional) – New position as `[x, y]`.
+- `rotation` (optional) – Rotation in radians.
+- `scale` (optional) – New scale as `[x, y]`.
+
+**Example:**
+```
+@mcp godot-mcp run update_node_transform --node_path "./Player" --position [100, 200] --rotation 1.5 --scale [2, 2]
+```
+
+**Use Cases:**
+- Precisely align UI elements or cameras.
+- Reset transforms after scripted changes.
+- Batch-move groups of nodes via successive calls.
+
+## Resource Templates
+
+Resource templates expose read-only endpoints via the MCP `read` verb:
+
+- `godot://script/{path}` – Script content and inferred language.
+- `godot://script/{path}/metadata` – Script metadata (class name, extends, methods, signals).
+- `godot://scene/current` – Current scene structure (`include_properties`/`include_scripts` enabled).
+- `godot://scene/tree` – Structure-only version of the scene tree.
+- `godot://assets/{type}` – JSON representation of assets filtered by `images`, `audio`, `fonts`, `models`, `shaders`, `resources`, or `all`.
+- `godot://debug/log` – Latest editor debug output.
+
+> **Note:** To modify script content, continue using the `edit_script` command rather than a resource template.
+
 ## Using Commands with Claude
 
 When working with Claude, you don't need to specify the exact command name or format. Instead, describe what you want to do in natural language, and Claude will use the appropriate command. For example:
@@ -291,3 +357,33 @@ Claude, can you create a new Label node under the UI node with the text "Score: 
 ```
 
 Claude will understand this request and use the `create_node` command with the appropriate parameters.
+
+## Usage Examples
+
+- **Scene review & augmentation**
+  ```
+  @mcp godot-mcp run get_editor_scene_structure --include_properties true --include_scripts true
+
+  I want to add a health system to my game. Please analyze the current structure, add a HealthManager node, and generate a script with damage/heal logic.
+  ```
+
+- **Script analysis**
+  ```
+  @mcp godot-mcp read godot://script/res://scripts/player.gd
+
+  Can you suggest optimisations to make the movement code more responsive?
+  ```
+
+- **Asset audit**
+  ```
+  @mcp godot-mcp run list_assets_by_type --type images
+
+  These sprites are messy; propose a folder structure and renaming scheme.
+  ```
+
+- **Debug assistance**
+  ```
+  @mcp godot-mcp run get_debug_output
+
+  I'm seeing a physics warning—help me interpret and fix it.
+  ```

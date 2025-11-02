@@ -4,25 +4,16 @@ A comprehensive integration between Godot Engine and AI assistants using the Mod
 
 ## Features
 
-- **Full Godot Project Access**: AI assistants can access and modify scripts, scenes, nodes, and project resources
-- **Two-way Communication**: Send project data to AI and apply suggested changes directly in the editor
-- **Command Categories**:
-  - **Node Commands**: Create, modify, and manage nodes in your scenes
-  - **Script Commands**: Edit, analyze, and create GDScript files
-  - **Scene Commands**: Manipulate scenes and their structure
-  - **Project Commands**: Access project settings and resources
-  - **Editor Commands**: Control various editor functionality
-  - **Enhanced Commands**: Access full scene tree, debug output, and asset management
-
-## Enhanced Features (New)
-
-This fork adds several significant improvements:
-
-- **Complete Scene Tree Visibility**: Retrieve the entire scene hierarchy with `get_editor_scene_structure`
-- **Dynamic Script Access**: Read and write any script by path with dynamic resource templates
-- **Asset Management**: Query and organize project assets by type (images, audio, models, etc.)
-- **Debug Output Access**: Retrieve runtime debug logs from the Godot editor
-- **Node Transform Tools**: Easily update node position, rotation and scale
+- **Full Godot Project Access**: AI assistants can access and modify scripts, scenes, nodes, and project resources.
+- **Flexible Scene Inspection**: Retrieve the current hierarchy with `get_editor_scene_structure`, including optional properties, scripts, and depth limits.
+- **Dynamic Script Access**: Read any script via `godot://script/{path}` and fetch metadata using `godot://script/{path}/metadata`.
+- **Script Editing Tools**: Create, edit, or template scripts directly through MCP commands.
+- **Node Management**: Create, remove, list, and inspect nodes with automatic path normalization.
+- **Scene Operations**: Open, save, and create scenes; query project info and current scene state.
+- **Asset Management**: List assets by type (`list_assets_by_type`) or enumerate project files; resource template `godot://assets/{type}` returns JSON.
+- **Debug Output Access**: Read editor debug logs with `get_debug_output`.
+- **Editor Automation**: Execute GDScript in the editor context via `execute_editor_script`.
+- **Two-way Workflow**: Send project data to AI, apply suggested changes, and refresh Godot automatically.
 
 ## Quick Setup
 
@@ -252,7 +243,6 @@ For more detailed information, check the documentation in the `docs` folder:
 - [Command Reference](docs/command-reference.md)
 - [Tool Testing Guide](docs/testing-guide.md)
 - [Architecture](docs/architecture.md)
-- [Enhanced Features Guide](docs/enhanced-features.md) (NEW)
 
 ## License
 
