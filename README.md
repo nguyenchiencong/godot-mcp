@@ -22,7 +22,6 @@ This fork adds several significant improvements:
 - **Dynamic Script Access**: Read and write any script by path with dynamic resource templates
 - **Asset Management**: Query and organize project assets by type (images, audio, models, etc.)
 - **Debug Output Access**: Retrieve runtime debug logs from the Godot editor
-- **AI Script Generation**: Generate script templates from natural language descriptions
 - **Node Transform Tools**: Easily update node position, rotation and scale
 
 ## Quick Setup
@@ -122,12 +121,6 @@ Please analyze this player script and suggest improvements.
 ```
 
 ```
-@mcp godot-mcp run ai_generate_script --description "A health system with damage and healing" --node_type "Node"
-
-Implement this health system in my game.
-```
-
-```
 @mcp godot-mcp run list_assets_by_type --type images
 
 Show me all the images in my project and help me organize them better.
@@ -201,7 +194,6 @@ Reset all enemy nodes' health to 100.
 - `get_debug_output` - Retrieves debug logs from editor
 - `update_node_transform` - Updates node position, rotation, and scale
 - `list_assets_by_type` - Lists project assets by type
-- `ai_generate_script` - Generates script templates from descriptions
 
 ## Troubleshooting
 
@@ -230,7 +222,6 @@ This fork adds several new files to the original project:
 
 - `server/src/resources/asset_resources.ts` - Asset querying functionality
 - `server/src/resources/debug_resources.ts` - Debug output access
-- `server/src/tools/ai_script_tools.ts` - AI script generation
 - `addons/godot_mcp/mcp_enhanced_commands.gd` - Enhanced command processor
 - `addons/godot_mcp/mcp_script_resource_commands.gd` - Script resource processor
 - `addons/godot_mcp/mcp_asset_commands.gd` - Asset commands processor

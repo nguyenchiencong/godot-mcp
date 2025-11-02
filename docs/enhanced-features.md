@@ -7,7 +7,6 @@ This guide details the enhanced features added to the Godot MCP system, allowing
 - [Overview](#overview)
 - [Complete Scene Tree Access](#complete-scene-tree-access)
 - [Dynamic Script Resources](#dynamic-script-resources)
-- [AI Script Generation](#ai-script-generation)
 - [Node Transform Tools](#node-transform-tools)
 - [Asset Management](#asset-management)
 - [Debug Output Access](#debug-output-access)
@@ -19,10 +18,9 @@ The enhanced Godot MCP implementation adds several powerful capabilities beyond 
 
 1. Full scene tree visibility with hierarchical node structure
 2. Direct access to any script by path
-3. AI-assisted script generation from natural language descriptions
-4. Streamlined node transform operations
-5. Asset organization and querying
-6. Debug and console output access
+3. Streamlined node transform operations
+4. Asset organization and querying
+5. Debug and console output access
 
 These features make the integration between Claude and Godot more seamless and powerful, enabling more complex AI-assisted game development workflows.
 
@@ -84,43 +82,6 @@ Access any script in your project directly by path, making it easy to read and m
 - Modify scripts directly through Claude
 - Compare different scripts for consistency
 - Implement cross-script functionality
-
-## AI Script Generation
-
-Generate script templates based on natural language descriptions, leveraging Claude's understanding of game development patterns and Godot's architecture.
-
-### Command Details
-
-```typescript
-// Command: ai_generate_script
-// Parameters:
-//   description: Natural language description of what the script should do
-//   node_type: The type of node this script is for (e.g., "CharacterBody2D")
-//   create_file: (Optional) Whether to create the file in the project
-//   file_path: (Optional) Path where to save the script
-```
-
-### Usage
-
-```
-@mcp godot-mcp run ai_generate_script --description "A player controller for a 2D platformer with double-jump and wall-sliding" --node_type "CharacterBody2D" --create_file true --file_path "res://scripts/player_controller.gd"
-```
-
-### How It Works
-
-The system analyzes the description and:
-1. Creates appropriate variable declarations based on common patterns
-2. Adds relevant signal definitions
-3. Implements function stubs with comments
-4. Includes typical code structures for the described functionality
-5. Organizes the script in a clean, readable format
-
-### Example Use Cases
-
-- Quick prototyping of game mechanics
-- Starting points for complex systems
-- Learning GDScript patterns and conventions
-- Consistent script structure across a project
 
 ## Node Transform Tools
 
@@ -214,13 +175,13 @@ Access Godot's debug output directly, allowing Claude to analyze runtime behavio
 ```
 @mcp godot-mcp run get_full_scene_tree
 
-I want to add a health system to my game. Please first analyze my scene structure, then add a health manager node to the scene, and generate a health system script with damage and healing functions.
+I want to add a health system to my game. Please first analyze my scene structure, then add a health manager node to the scene, and help me create a script with damage and healing functions using the standard script tools.
 ```
 
 Claude can:
 1. Analyze the full scene tree
 2. Create a new Node named "HealthManager"
-3. Generate a health system script with appropriate functions
+3. Create a new script file with basic health management logic
 4. Attach the script to the new node
 
 ### Example 2: Script Analysis and Improvement
