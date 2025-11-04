@@ -62,6 +62,89 @@ Now, let's add some basic game logic to our scene.
 
    Press F5 in Godot to run the scene and test the player character movement.
 
+### Debugging with Real-time Debugger
+
+The Godot MCP integration includes powerful real-time debugging capabilities that allow you to debug your game while it's running.
+
+#### Setting Up Debugger Session
+
+1. **Enable debugger events:**
+
+   ```
+   @mcp godot-mcp run debugger_enable_events
+   ```
+
+2. **Set breakpoints in your code:**
+
+   ```
+   @mcp godot-mcp run debugger_set_breakpoint --script_path "res://scripts/player.gd" --line 42
+   ```
+
+3. **Run your project with debugging:**
+   - Press **F5** in Godot (not F6)
+   - The game will start with debugging enabled
+
+#### Real-time Debugging Workflow
+
+1. **Run your game and trigger breakpoints:**
+   - When execution hits a breakpoint, Claude will receive real-time notifications
+   - You can examine the current call stack and variables
+
+2. **Control execution:**
+   ```
+   @mcp godot-mcp run debugger_step_over
+   @mcp godot-mcp run debugger_step_into
+   @mcp godot-mcp run debugger_resume_execution
+   ```
+
+3. **Inspect debugger state:**
+   ```
+   @mcp godot-mcp run debugger_get_current_state
+   @mcp godot-mcp read godot://debugger/state
+   ```
+
+#### Example: Debugging Movement Issues
+
+1. **Set breakpoints in movement code:**
+   ```
+   @mcp godot-mcp run debugger_set_breakpoint --script_path "res://scripts/player.gd" --line 25
+   ```
+
+2. **Run the game and trigger the issue:**
+   - Move the character with arrow keys
+   - Execution will pause at the breakpoint
+
+3. **Step through the code:**
+   ```
+   @mcp godot-mcp run debugger_step_over
+   ```
+
+4. **Examine variables and state:**
+   ```
+   @mcp godot-mcp run debugger_get_call_stack
+   ```
+
+#### Quick Testing with Test Scene
+
+The project includes a test scene specifically for debugging:
+
+1. **Open the test scene:**
+   ```
+   @mcp godot-mcp run open_scene --scene_path "res://test_main_scene.tscn"
+   ```
+
+2. **Set test breakpoints:**
+   ```
+   @mcp godot-mcp run debugger_set_breakpoint --script_path "res://test_debugger.gd" --line 42
+   ```
+
+3. **Run and test:**
+   - Press **F5** to run with debugging
+   - Press **SPACE** for manual pause points
+   - Wait for automatic triggers (every second)
+
+For detailed debugging instructions, see [TESTING_DEBUGGER.md](../TESTING_DEBUGGER.md).
+
 ### Debugging and Fixing Issues
 
 If there are issues with the implementation, you can ask Claude to help debug and fix them.

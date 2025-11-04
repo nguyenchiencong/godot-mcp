@@ -9,6 +9,7 @@ This document provides a reference for the commands available through the Godot 
 - [Editor Tools](#editor-tools)
 - [Scene Tools](#scene-tools)
 - [Asset Tools](#asset-tools)
+- [Debugger Tools](#debugger-tools)
 - [Enhanced Tools](#enhanced-tools)
 - [Resource Templates](#resource-templates)
 - [Using Commands with Claude](#using-commands-with-claude)
@@ -243,6 +244,160 @@ List project files that match a set of extensions.
 Show me every *.tscn file in the project.
 ```
 
+## Debugger Tools
+
+The debugger tools provide comprehensive debugging capabilities for your Godot projects. These tools require running the project with debugging enabled (F5 in Godot Editor).
+
+### debugger_enable_events
+Enable real-time debugger event notifications for the current client.
+
+**Parameters:** None
+
+**Returns:** Success message with client ID
+
+**Example:**
+```
+Enable debugger events so I can receive breakpoint notifications.
+```
+
+### debugger_disable_events
+Disable debugger event notifications for the current client.
+
+**Parameters:** None
+
+**Returns:** Success message
+
+**Example:**
+```
+Disable debugger events for this client.
+```
+
+### debugger_set_breakpoint
+Set a breakpoint at a specific line in a script.
+
+**Parameters:**
+- `script_path` - Path to the script file (absolute or relative to res://)
+- `line` - Line number where to set the breakpoint
+
+**Returns:** Success message with breakpoint details
+
+**Example:**
+```
+Set a breakpoint at line 42 in the player script.
+```
+
+### debugger_remove_breakpoint
+Remove a breakpoint from a script.
+
+**Parameters:**
+- `script_path` - Path to the script file
+- `line` - Line number where to remove the breakpoint
+
+**Returns:** Success message
+
+**Example:**
+```
+Remove the breakpoint at line 42 in the player script.
+```
+
+### debugger_get_breakpoints
+Get all currently set breakpoints across all scripts.
+
+**Parameters:** None
+
+**Returns:** List of breakpoints organized by script
+
+**Example:**
+```
+Show me all the breakpoints I currently have set.
+```
+
+### debugger_clear_all_breakpoints
+Clear all breakpoints at once.
+
+**Parameters:** None
+
+**Returns:** Success message with cleared breakpoints
+
+**Example:**
+```
+Clear all breakpoints in the project.
+```
+
+### debugger_pause_execution
+Pause the execution of the running project.
+
+**Parameters:** None
+
+**Returns:** Success message with session information
+
+**Example:**
+```
+Pause the game execution so I can examine the current state.
+```
+
+### debugger_resume_execution
+Resume paused execution.
+
+**Parameters:** None
+
+**Returns:** Success message with session information
+
+**Example:**
+```
+Resume the game execution.
+```
+
+### debugger_step_over
+Step over the current line of code (don't enter function calls).
+
+**Parameters:** None
+
+**Returns:** Success message with session information
+
+**Example:**
+```
+Step over the current line while debugging.
+```
+
+### debugger_step_into
+Step into the current function call.
+
+**Parameters:** None
+
+**Returns:** Success message with session information
+
+**Example:**
+```
+Step into this function to see what it does.
+```
+
+
+### debugger_get_call_stack
+Get the current call stack information.
+
+**Parameters:**
+- `session_id` (optional) - Debug session ID (will use active session if not provided)
+
+**Returns:** Call stack information with frames
+
+**Example:**
+```
+Get the current call stack to see how we got here.
+```
+
+### debugger_get_current_state
+Get the current debugger state including sessions and execution status.
+
+**Parameters:** None
+
+**Returns:** Comprehensive debugger state information
+
+**Example:**
+```
+Show me the current debugger state and active sessions.
+```
+
 ## Enhanced Tools
 
 ### get_editor_scene_structure
@@ -423,6 +578,10 @@ Resource templates expose read-only endpoints via the MCP `read` verb:
 - `godot://scene/tree` – Structure-only version of the scene tree.
 - `godot://assets/{type}` – JSON representation of assets filtered by `images`, `audio`, `fonts`, `models`, `shaders`, `resources`, or `all`.
 - `godot://debug/log` – Latest editor debug output.
+- `godot://debugger/state` – Current debugger state and session information.
+- `godot://debugger/breakpoints` – Active breakpoints across all scripts.
+- `godot://debugger/call-stack/{sessionId?}` – Call stack for specific debug session (or active session).
+- `godot://debugger/session/{sessionId}` – Detailed information about a specific debugger session.
 
 > **Note:** To modify script content, continue using the `edit_script` command rather than a resource template.
 

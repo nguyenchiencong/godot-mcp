@@ -177,7 +177,176 @@ All examples assume:
 
 ---
 
+## Debugger Tools
+
+### debugger_enable_events
+- **Setup**: Ensure project is ready to run with debugging (F5).
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_enable_events
+  ```
+- **Expected Outcome**: Success message confirming events are enabled for the client.
+
+### debugger_get_current_state
+- **Setup**: No setup required.
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_get_current_state
+  ```
+- **Expected Outcome**: Current debugger state showing active sessions, breakpoints, execution status.
+
+### debugger_set_breakpoint
+- **Setup**: Have a script file available (e.g., the test_debugger.gd script).
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_set_breakpoint --script_path "res://test_debugger.gd" --line 42
+  ```
+- **Expected Outcome**: Success message confirming breakpoint is set.
+
+### debugger_get_breakpoints
+- **Setup**: Set at least one breakpoint using the command above.
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_get_breakpoints
+  ```
+- **Expected Outcome**: List of all currently set breakpoints organized by script.
+
+### debugger_pause_execution
+- **Setup**: Project must be running with debugging enabled (F5).
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_pause_execution
+  ```
+- **Expected Outcome**: Success message confirming execution is paused.
+
+### debugger_resume_execution
+- **Setup**: Project must be paused (either at breakpoint or manually paused).
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_resume_execution
+  ```
+- **Expected Outcome**: Success message confirming execution has resumed.
+
+### debugger_step_over
+- **Setup**: Project must be paused at a breakpoint.
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_step_over
+  ```
+- **Expected Outcome**: Success message confirming step over execution.
+
+### debugger_step_into
+- **Setup**: Project must be paused at a breakpoint.
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_step_into
+  ```
+- **Expected Outcome**: Success message confirming step into execution.
+
+### debugger_get_call_stack
+- **Setup**: Project must be paused at a breakpoint.
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_get_call_stack
+  ```
+- **Expected Outcome**: Call stack information showing current execution frames.
+
+### debugger_clear_all_breakpoints
+- **Setup**: Have some breakpoints set.
+- **Command**:
+  ```shell
+  @mcp godot-mcp run debugger_clear_all_breakpoints
+  ```
+- **Expected Outcome**: Success message confirming all breakpoints are cleared.
+
+---
+
+## Debugger Resource Templates
+
+### godot://debugger/state
+- **Setup**: No setup required.
+- **Command**:
+  ```shell
+  @mcp godot-mcp read godot://debugger/state
+  ```
+- **Expected Outcome**: JSON with current debugger state, sessions, and execution status.
+
+### godot://debugger/breakpoints
+- **Setup**: Set at least one breakpoint.
+- **Command**:
+  ```shell
+  @mcp godot-mcp read godot://debugger/breakpoints
+  ```
+- **Expected Outcome**: JSON listing all active breakpoints across scripts.
+
+### godot://debugger/call-stack
+- **Setup**: Project must be paused at a breakpoint.
+- **Command**:
+  ```shell
+  @mcp godot-mcp read godot://debugger/call-stack
+  ```
+- **Expected Outcome**: JSON with current call stack information.
+
+---
+
+## Complete Debugger Testing Workflow
+
+For comprehensive debugger testing, follow this workflow:
+
+1. **Enable Events**:
+   ```shell
+   @mcp godot-mcp run debugger_enable_events
+   ```
+
+2. **Check Initial State**:
+   ```shell
+   @mcp godot-mcp run debugger_get_current_state
+   ```
+
+3. **Open Test Scene**:
+   ```shell
+   @mcp godot-mcp run open_scene --scene_path "res://test_main_scene.tscn"
+   ```
+
+4. **Set Test Breakpoints**:
+   ```shell
+   @mcp godot-mcp run debugger_set_breakpoint --script_path "res://test_debugger.gd" --line 42
+   ```
+
+5. **Verify Breakpoints**:
+   ```shell
+   @mcp godot-mcp run debugger_get_breakpoints
+   ```
+
+6. **Run Project with Debugging**:
+   - Press **F5** in Godot Editor
+   - Wait for automatic breakpoint triggers (every ~60 frames)
+
+7. **Test Execution Control**:
+   ```shell
+   @mcp godot-mcp run debugger_pause_execution
+   @mcp godot-mcp run debugger_step_over
+   @mcp godot-mcp run debugger_step_into
+   @mcp godot-mcp run debugger_resume_execution
+   ```
+
+8. **Inspect State**:
+   ```shell
+   @mcp godot-mcp read godot://debugger/state
+   @mcp godot-mcp run debugger_get_call_stack
+   ```
+
+9. **Cleanup**:
+   ```shell
+   @mcp godot-mcp run debugger_clear_all_breakpoints
+   ```
+
+For detailed debugging scenarios and troubleshooting, see [TESTING_DEBUGGER.md](../TESTING_DEBUGGER.md).
+
+---
+
 ## Cleanup Suggestions
 
 - Delete temporary nodes or scripts created during testing to keep the project tidy.
+- Clear all breakpoints after testing to avoid interference with normal development.
 - If you created new assets or scenes solely for testing, remove or revert them as appropriate.

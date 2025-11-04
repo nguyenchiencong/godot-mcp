@@ -57,6 +57,60 @@ This guide walks you through installing and setting up the Godot MCP integration
 4. Save the configuration
 5. When chatting with Claude, you can now access Godot tools
 
+## Debugger Setup
+
+The debugger integration is included automatically with the Godot MCP addon, but requires specific setup to function properly.
+
+### Debugger Prerequisites
+
+- **Godot Editor 4.5+**: Required for EditorDebuggerPlugin support
+- **Debug Mode**: Projects must be run with F5 (Debug), not F6 (Run)
+- **Active Scene**: A scene must be loaded and running for debugging to work
+
+### Enabling Debugger Features
+
+The debugger features are automatically available when:
+1. The Godot MCP plugin is enabled
+2. The MCP server is connected to Godot
+3. A project is running in debug mode
+
+### Testing the Debugger
+
+To verify debugger functionality:
+
+1. **Open the Test Scene**:
+   - In Godot, open `res://test_main_scene.tscn`
+   - This scene includes `test_debugger.gd` with breakpoints for testing
+
+2. **Start Debugger Events**:
+   ```
+   @mcp godot-mcp run debugger_enable_events
+   ```
+
+3. **Set a Test Breakpoint**:
+   ```
+   @mcp godot-mcp run debugger_set_breakpoint --script_path "res://test_debugger.gd" --line 42
+   ```
+
+4. **Run with Debugging**:
+   - Press **F5** in Godot Editor
+   - Wait for automatic breakpoint triggers (every ~60 frames)
+   - Or press **SPACE** for manual pause points
+
+5. **Verify Functionality**:
+   - Check for breakpoint hit notifications
+   - Test pause/resume/step operations
+   - Verify call stack access
+
+For comprehensive testing instructions, see [TESTING_DEBUGGER.md](../TESTING_DEBUGGER.md).
+
+### Debugger Limitations
+
+- **Editor Only**: Only works when running projects from Godot Editor with F5
+- **No Export Support**: Debugger doesn't work in exported builds
+- **Single Client**: Only one MCP client can receive debugger events at a time
+- **Basic Stepping**: Step functionality limited by Godot's debugging API
+
 ## Troubleshooting
 
 ### Connection Issues
@@ -72,3 +126,33 @@ If commands are failing:
 1. Check the logs in both the Godot panel and terminal running the MCP server
 2. Make sure your Godot project is properly set up and has an active scene
 3. Verify that paths used in commands follow the correct format (usually starting with "res://")
+
+### Debugger Issues
+
+**"No active debugger session"**
+- Ensure project is running with **F5** (Debug) from Godot Editor
+- Check that WebSocket server is running on port 9080
+- Verify the MCP server is connected to Godot
+
+**"Failed to set breakpoint"**
+- Verify script path exists and is correct (use absolute `res://` paths)
+- Check that line number is valid for the target script
+- Ensure the project is running in debug mode
+
+**Missing debugger events**
+- Call `debugger_enable_events()` first to receive event notifications
+- Check WebSocket connection status in server console
+- Verify that only one client has events enabled at a time
+
+**Breakpoint not hitting**
+- Make sure the code execution actually reaches the breakpoint line
+- Check console output for any debugger errors
+- Test with the provided `test_debugger.gd` script to verify functionality
+
+### Getting Help
+
+If you encounter issues:
+1. Check the detailed [DEBUGGER_INTEGRATION.md](../DEBUGGER_INTEGRATION.md) documentation
+2. Review the [TESTING_DEBUGGER.md](../TESTING_DEBUGGER.md) troubleshooting section
+3. Check the Godot console and MCP server logs for error messages
+4. Try the basic test scene to isolate the issue

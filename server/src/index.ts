@@ -7,6 +7,7 @@ import { editorTools } from './tools/editor_tools.js';
 import { assetTools } from './tools/asset_tools.js';
 import { enhancedTools } from './tools/enhanced_tools.js';
 import { scriptResourceTools } from './tools/script_resource_tools.js';
+import { debuggerTools } from './tools/debugger_tools.js';
 import { getGodotConnection } from './utils/godot_connection.js';
 
 // Import resources
@@ -32,6 +33,12 @@ import {
 } from './resources/editor_resources.js';
 import { assetListResource, assetByTypeResourceTemplate } from './resources/asset_resources.js';
 import { debugOutputResource } from './resources/debug_resources.js';
+import {
+  debuggerStateResource,
+  debuggerBreakpointsResource,
+  debuggerCallStackResourceTemplate,
+  debuggerSessionResourceTemplate
+} from './resources/debugger_resources.js';
 
 /**
  * Main entry point for the Godot MCP server
@@ -53,7 +60,8 @@ async function main() {
     ...editorTools,
     ...assetTools,
     ...enhancedTools,
-    ...scriptResourceTools
+    ...scriptResourceTools,
+    ...debuggerTools
   ];
 
   allTools.forEach(tool => {
@@ -74,9 +82,13 @@ async function main() {
   server.addResource(fullSceneTreeResource);
   server.addResource(debugOutputResource);
   server.addResource(assetListResource);
+  server.addResource(debuggerStateResource);
+  server.addResource(debuggerBreakpointsResource);
   server.addResourceTemplate(scriptByPathResourceTemplate);
   server.addResourceTemplate(scriptMetadataResourceTemplate);
   server.addResourceTemplate(assetByTypeResourceTemplate);
+  server.addResourceTemplate(debuggerCallStackResourceTemplate);
+  server.addResourceTemplate(debuggerSessionResourceTemplate);
 
   console.error('All resources and tools registered');
 

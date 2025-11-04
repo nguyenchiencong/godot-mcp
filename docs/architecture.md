@@ -38,6 +38,13 @@ The Godot addon runs within the Godot editor and provides:
 - Offers configuration options
 - Ensures proper lifecycle management within Godot
 
+#### Debugger Integration
+- **MCPDebuggerBridge**: EditorDebuggerPlugin for debugging capabilities
+- **MCPDebuggerCommands**: Command processor for debugger operations
+- **RuntimeDebugger**: Runtime script injected into debugged projects
+- **Event System**: Real-time notifications for breakpoint hits and execution changes
+- **Session Management**: Handles multiple debug sessions and client ownership
+
 ### 2. MCP Server
 
 The MCP server bridges Claude and Godot:
@@ -149,12 +156,94 @@ The architecture implements a comprehensive error handling strategy:
 - UI updates are throttled to prevent editor slowdown
 - Command execution is optimized to minimize impact
 
+## Debugger Architecture
+
+### Debugger Component Overview
+
+The debugger integration introduces several new components that work together with the existing architecture:
+
+#### MCPDebuggerBridge (EditorDebuggerPlugin)
+- **Purpose**: Interfaces with Godot's built-in debugging system
+- **Integration**: Registered as an EditorDebuggerPlugin in the main plugin
+- **Responsibilities**:
+  - Manages debug session lifecycle
+  - Handles breakpoint registration and management
+  - Provides execution control (pause/resume/step)
+  - Emits real-time events for breakpoint hits and state changes
+  - Throttles events to prevent client overwhelming
+
+#### MCPDebuggerCommands (Command Processor)
+- **Purpose**: Processes debugger-related MCP commands
+- **Integration**: Registered with the main command handler
+- **Responsibilities**:
+  - Routes 13 debugger commands to appropriate operations
+  - Manages client event subscription ownership
+  - Handles parameter validation and error responses
+  - Forwards debugger events to subscribed clients
+
+#### RuntimeDebugger (Runtime Script)
+- **Purpose**: Runtime script injected into debugged projects
+- **Integration**: Communicates through Godot's EngineDebugger system
+- **Responsibilities**:
+  - Handles debug message capture from runtime
+  - Manages breakpoint execution in running code
+  - Provides runtime expression evaluation
+  - Reports execution state changes
+
+### Debugger Communication Flow
+
+```
+Claude Client
+    ↓ (MCP Protocol)
+TypeScript Server (debugger_tools.ts)
+    ↓ (WebSocket)
+Godot WebSocket Server
+    ↓ (Command Routing)
+MCPDebuggerCommands
+    ↓ (Bridge Access)
+MCPDebuggerBridge (EditorDebuggerPlugin)
+    ↓ (EngineDebugger)
+RuntimeDebugger (in running project)
+```
+
+### Debugger Event System
+
+The debugger uses an event-driven architecture for real-time notifications:
+
+1. **Event Registration**: Clients call `debugger_enable_events()` to subscribe
+2. **Event Generation**: Debugger bridge emits signals on state changes
+3. **Event Throttling**: Events are throttled (100ms minimum) to prevent flooding
+4. **Event Forwarding**: Events are forwarded to subscribed clients only
+5. **Event Types**:
+   - `breakpoint_hit`: When execution hits a breakpoint
+   - `execution_paused`: When execution is paused
+   - `execution_resumed`: When execution resumes
+   - `stack_frame_changed`: When current stack frame changes
+
+### Debugger Session Management
+
+- **Session Lifecycle**: Sessions are created when projects run with F5 (Debug)
+- **Multiple Sessions**: Supports multiple concurrent debug sessions
+- **Client Ownership**: Only one client can receive events at a time
+- **Session State**: Tracks pause status, current script/line, breakpoints
+- **Cleanup**: Automatic cleanup when sessions end or clients disconnect
+
+### Debugger Resources
+
+The debugger provides MCP resources for state access:
+
+- **godot://debugger/state**: Current debugger state and sessions
+- **godot://debugger/breakpoints**: Active breakpoints across all scripts
+- **godot://debugger/call-stack/{sessionId}**: Call stack for specific session
+- **godot://debugger/session/{sessionId}**: Session-specific information
+
 ## Security Considerations
 
 1. **Local-Only Communication**: By default, the WebSocket server only accepts connections from localhost
 2. **Authentication Options**: Optional authentication can be implemented
 3. **Command Validation**: All commands are validated before execution
 4. **Error Isolation**: Errors in command execution don't crash the Godot editor
+5. **Debugger Isolation**: Debugger operations are isolated from normal project operations
 
 ## Extensibility
 

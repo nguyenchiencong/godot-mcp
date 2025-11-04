@@ -69,11 +69,47 @@ Use this document to craft effective prompts when instructing an LLM to interact
 
 ---
 
+## Debugger Tools (NEW!)
+
+| Tool | Purpose | Parameters | Example Prompt |
+|------|---------|------------|----------------|
+| `debugger_enable_events` | Enable real-time debugger event notifications for breakpoints and execution changes. | _none_ | "Enable debugger events so I get notifications when breakpoints are hit." |
+| `debugger_disable_events` | Disable debugger event notifications. | _none_ | "Disable debugger events to stop receiving notifications." |
+| `debugger_set_breakpoint` | Set a breakpoint at a specific line in a script. | `script_path` (string), `line` (number) | "Set a breakpoint at line 25 in the player script." |
+| `debugger_remove_breakpoint` | Remove a breakpoint from a script. | `script_path` (string), `line` (number) | "Remove the breakpoint at line 25 in the player script." |
+| `debugger_get_breakpoints` | List all currently set breakpoints across all scripts. | _none_ | "Show me all the breakpoints I have set currently." |
+| `debugger_clear_all_breakpoints` | Clear all breakpoints at once. | _none_ | "Clear all breakpoints to start fresh." |
+| `debugger_pause_execution` | Pause the execution of the running project (requires active debug session). | _none_ | "Pause the game execution to examine the current state." |
+| `debugger_resume_execution` | Resume paused execution. | _none_ | "Resume execution after pausing at a breakpoint." |
+| `debugger_step_over` | Step over the current line while debugging (execute without entering functions). | _none_ | "Step over the current line to continue execution." |
+| `debugger_step_into` | Step into the current function call to debug inside it. | _none_ | "Step into the function to see what happens inside." |
+| `debugger_get_call_stack` | Get the current call stack information (requires paused execution). | `session_id` (optional number) | "Show me the call stack when the debugger is paused." |
+| `debugger_get_current_state` | Get current debugger state and session information. | _none_ | "Check the current debugger state and see if we have active sessions." |
+
+---
+
 ### Tips for Prompting
 
 - Always specify absolute node paths (e.g. `./Player`) when referring to scene nodes.
 - Use resource templates (`godot://script/{path}`, `godot://assets/{type}`) for read-only data; use commands (e.g., `edit_script`) for writes.
 - Combine tool calls in natural language:
-  > “List image assets, pick one, then attach it to `./UI/Logo` by editing the UI script accordingly.”
+  > "List image assets, pick one, then attach it to `./UI/Logo` by editing the UI script accordingly."
+
+### Debugger-Specific Tips
+
+- **Debug Mode Required**: Always run projects with **F5** (Debug mode), not F6 (Run mode) when using debugger tools.
+- **Enable Events First**: Call `debugger_enable_events()` before setting breakpoints to receive real-time notifications.
+- **Script Paths**: Use absolute `res://` paths for script locations (e.g., `"res://scripts/player.gd"`).
+- **Line Numbers**: Verify line numbers exist in the target script before setting breakpoints.
+- **Active Sessions**: Some debugger tools require an active debug session - start the project with F5 first.
+- **Real-time Notifications**: Breakpoint hits and execution changes are sent as events when events are enabled.
+
+### Example Debugger Workflows
+
+**Basic Debugging**:
+> "Enable debugger events, set a breakpoint at line 25 in the player script, run the game with F5, and step through the execution."
+
+**Complex Debugging**:
+> "Enable debugger events, set breakpoints at lines 15, 25, and 42 in the enemy AI script, run the game, and pause execution when breakpoints are hit to examine the call stack."
 
 Keep this guide handy while constructing system or user prompts so the LLM knows exactly which tools are available and how to use them. 

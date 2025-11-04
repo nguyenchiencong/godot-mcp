@@ -20,10 +20,11 @@ func _initialize_command_processors():
 	# Create and add all required command processors
 	var node_commands = MCPNodeCommands.new()
 	var script_commands = MCPScriptCommands.new()
-	var scene_commands = MCPSceneCommands.new() 
+	var scene_commands = MCPSceneCommands.new()
 	var project_commands = MCPProjectCommands.new()
 	var editor_commands = MCPEditorCommands.new()
 	var editor_script_commands = MCPEditorScriptCommands.new()
+	var debugger_commands = MCPDebuggerCommands.new()
 	
 	# Set server reference for all processors
 	node_commands._websocket_server = _websocket_server
@@ -32,6 +33,7 @@ func _initialize_command_processors():
 	project_commands._websocket_server = _websocket_server
 	editor_commands._websocket_server = _websocket_server
 	editor_script_commands._websocket_server = _websocket_server
+	debugger_commands._websocket_server = _websocket_server
 	
 	# Add them to our processor list
 	_command_processors.append(node_commands)
@@ -40,6 +42,7 @@ func _initialize_command_processors():
 	_command_processors.append(project_commands)
 	_command_processors.append(editor_commands)
 	_command_processors.append(editor_script_commands)
+	_command_processors.append(debugger_commands)
 	
 	# Try to load optional command classes
 	var script_resource_commands = _try_load_optional_command("res://addons/godot_mcp/mcp_script_resource_commands.gd")
@@ -53,14 +56,16 @@ func _initialize_command_processors():
 	add_child(project_commands)
 	add_child(editor_commands)
 	add_child(editor_script_commands)
+	add_child(debugger_commands)
 	
 	print("Command processors initialized:")
 	print("- Node Commands")
 	print("- Script Commands")
 	print("- Scene Commands")
-	print("- Project Commands") 
+	print("- Project Commands")
 	print("- Editor Commands")
 	print("- Editor Script Commands")
+	print("- Debugger Commands")
 	
 	if script_resource_commands:
 		print("- Script Resource Commands")
