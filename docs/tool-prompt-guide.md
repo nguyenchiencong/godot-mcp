@@ -35,7 +35,18 @@ Use this document to craft effective prompts when instructing an LLM to interact
 | `open_scene` | Open a scene in the editor. | `path` (string) | “Open `res://scenes/menu.tscn` in the editor.” |
 | `get_current_scene` | Summarize the active scene. | _none_ | “Which scene is currently open?” |
 | `get_project_info` | Report project metadata, Godot version, and current scene. | _none_ | “Show me the project name, version, and current scene path.” |
-| `create_resource` | Create a Godot resource file with preset properties. | `resource_type` (string), `resource_path` (string), `properties` (optional dict) | “Create a `StyleBoxFlat` at `res://ui/button_style.tres` with `bg_color` set to `#2f6fff`.” |
+| `create_resource` | Create a Godot resource file with preset properties. | `resource_type` (string), `resource_path` (string), `properties` (optional dict) | "Create a `StyleBoxFlat` at `res://ui/button_style.tres` with `bg_color` set to `#2f6fff`." |
+
+---
+
+## Project Tools
+
+| Tool | Purpose | Parameters | Example Prompt |
+|------|---------|------------|----------------|
+| `run_project` | Launch the project using the Project Settings main scene (same as pressing F5). | _none_ | "Run the full project so I can watch the main menu flow." |
+| `stop_running_project` | Stop whatever scene the editor is currently playing. | _none_ | "Stop the running scene and return to the editor." |
+| `run_current_scene` | Play the scene currently open in the editor (F6 behavior). | _none_ | "Run the scene I have open to verify the latest changes." |
+| `run_specific_scene` | Play a specific saved scene by resource path. | `scene_path` (string) | "Run `res://test_main_scene.tscn` so I can test the debugger harness." |
 
 ---
 
@@ -43,7 +54,7 @@ Use this document to craft effective prompts when instructing an LLM to interact
 
 | Tool | Purpose | Parameters | Example Prompt |
 |------|---------|------------|----------------|
-| `execute_editor_script` | Run arbitrary GDScript inside the editor context. | `code` (string) | “Find all nodes in the `Enemies` group and print their names.” |
+| `execute_editor_script` | Run arbitrary GDScript inside the editor context. | `code` (string) | "Find all nodes in the `Enemies` group and print their names." |
 
 ---
 
@@ -69,7 +80,7 @@ Use this document to craft effective prompts when instructing an LLM to interact
 
 ---
 
-## Debugger Tools (NEW!)
+## Debugger Tools
 
 | Tool | Purpose | Parameters | Example Prompt |
 |------|---------|------------|----------------|

@@ -8,6 +8,7 @@ This document provides a reference for the commands available through the Godot 
 - [Script Tools](#script-tools)
 - [Editor Tools](#editor-tools)
 - [Scene Tools](#scene-tools)
+- [Project Tools](#project-tools)
 - [Asset Tools](#asset-tools)
 - [Debugger Tools](#debugger-tools)
 - [Enhanced Tools](#enhanced-tools)
@@ -212,6 +213,49 @@ Create a new resource in the project.
 **Example:**
 ```
 Create a StyleBoxFlat resource at "res://resources/button_style.tres" with a blue background color.
+```
+
+## Project Tools
+
+### run_project
+Start the project using the main scene defined in Project Settings (same as pressing **F5** in the editor).
+
+**Parameters:** None
+
+**Example:**
+```
+Run the full project so I can verify the intro flow.
+```
+
+### stop_running_project
+Stop the currently running scene if the editor is in play mode.
+
+**Parameters:** None
+
+**Example:**
+```
+Stop the running project and return to the editor.
+```
+
+### run_current_scene
+Play the scene that is currently open in the editor (equivalent to pressing **F6**).
+
+**Parameters:** None
+
+**Example:**
+```
+Run the open scene so I can test the latest layout changes.
+```
+
+### run_specific_scene
+Launch a specific saved scene by resource path without changing the editor’s open scene.
+
+**Parameters:**
+- `scene_path` - Resource path of the scene to run (e.g., `"res://test_main_scene.tscn"`)
+
+**Example:**
+```
+Run "res://test_main_scene.tscn" to exercise the debugger harness.
 ```
 
 ## Asset Tools

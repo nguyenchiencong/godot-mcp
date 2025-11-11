@@ -19,6 +19,18 @@ func process_command(client_id: int, command_type: String, params: Dictionary, c
 		"list_project_resources":
 			_list_project_resources(client_id, params, command_id)
 			return true
+		"run_project":
+			_run_project(client_id, params, command_id)
+			return true
+		"stop_running_project":
+			_stop_running_project(client_id, params, command_id)
+			return true
+		"run_current_scene":
+			_run_current_scene(client_id, params, command_id)
+			return true
+		"run_specific_scene":
+			_run_specific_scene(client_id, params, command_id)
+			return true
 	return false  # Command not handled
 
 func _get_project_info(client_id: int, _params: Dictionary, command_id: String) -> void:
@@ -206,3 +218,81 @@ func _scan_resources(dir: DirAccess, path: String, resources: Dictionary) -> voi
 		file_name = dir.get_next()
 	
 	dir.list_dir_end()
+
+func _run_project(client_id: int, _params: Dictionary, command_id: String) -> void:
+	var editor_interface = _get_editor_interface()
+	if not editor_interface:
+		return _send_error(client_id, "Editor interface not available", command_id)
+	
+	var main_scene: String = ProjectSettings.get_setting("application/run/main_scene", "")
+	if main_scene.is_empty():
+		return _send_error(client_id, "No main scene configured in project settings", command_id)
+	
+	editor_interface.play_main_scene()
+	_send_success(client_id, {
+		"status": "running",
+		"scene_path": main_scene
+	}, command_id)
+
+func _stop_running_project(client_id: int, _params: Dictionary, command_id: String) -> void:
+	var editor_interface = _get_editor_interface()
+	if not editor_interface:
+		return _send_error(client_id, "Editor interface not available", command_id)
+	
+	if not editor_interface.is_playing_scene():
+		return _send_success(client_id, {
+			"status": "idle",
+			"message": "Editor is not currently running a scene"
+		}, command_id)
+	
+	editor_interface.stop_playing_scene()
+	_send_success(client_id, {
+		"status": "stopped"
+	}, command_id)
+
+func _run_current_scene(client_id: int, _params: Dictionary, command_id: String) -> void:
+	var editor_interface = _get_editor_interface()
+	if not editor_interface:
+		return _send_error(client_id, "Editor interface not available", command_id)
+	
+	var scene_root = editor_interface.get_edited_scene_root()
+	if not scene_root:
+		return _send_error(client_id, "No scene is currently open in the editor", command_id)
+	
+	var scene_path: String = scene_root.scene_file_path
+	if scene_path.is_empty():
+		return _send_error(client_id, "Current scene must be saved before it can be run", command_id)
+	
+	editor_interface.play_current_scene()
+	_send_success(client_id, {
+		"status": "running",
+		"scene_path": scene_path
+	}, command_id)
+
+func _run_specific_scene(client_id: int, params: Dictionary, command_id: String) -> void:
+	var editor_interface = _get_editor_interface()
+	if not editor_interface:
+		return _send_error(client_id, "Editor interface not available", command_id)
+	
+	var scene_path: String = params.get("scene_path", "")
+	if scene_path.is_empty():
+		return _send_error(client_id, "scene_path parameter is required", command_id)
+	
+	if not ResourceLoader.exists(scene_path):
+		return _send_error(client_id, "Scene does not exist: %s" % scene_path, command_id)
+	
+	editor_interface.play_custom_scene(scene_path)
+	_send_success(client_id, {
+		"status": "running",
+		"scene_path": scene_path
+	}, command_id)
+
+func _get_editor_interface():
+	if not Engine.has_meta("GodotMCPPlugin"):
+		return null
+	
+	var plugin = Engine.get_meta("GodotMCPPlugin") as EditorPlugin
+	if not plugin:
+		return null
+	
+	return plugin.get_editor_interface()

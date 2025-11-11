@@ -48,3 +48,4 @@ CLAUDE.md
 AGENTS.md
 examples/
 .claude/
+.mcp.json

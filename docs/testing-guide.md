@@ -90,6 +90,42 @@ All examples assume:
 
 ---
 
+## Project Tools
+
+### run_project
+- **Setup**: Project Settings must define a Main Scene (Project → Project Settings → Application → Run).
+- **Command**:
+  ```shell
+  @mcp godot-mcp run run_project
+  ```
+- **Expected Outcome**: Confirmation mentioning the main scene path. The editor begins playing the project as if F5 was pressed.
+
+### stop_running_project
+- **Setup**: Start the project from the editor (press F5 or use `run_project`).
+- **Command**:
+  ```shell
+  @mcp godot-mcp run stop_running_project
+  ```
+- **Expected Outcome**: Success message like `Stopped the running scene.` The play session terminates; if nothing was running the response mentions the editor was idle.
+
+### run_current_scene
+- **Setup**: Open and save a scene in the editor.
+- **Command**:
+  ```shell
+  @mcp godot-mcp run run_current_scene
+  ```
+- **Expected Outcome**: Response lists the scene path and the editor starts playing that scene (same as pressing F6).
+
+### run_specific_scene
+- **Setup**: Note the resource path of a saved scene (e.g. `res://test_main_scene.tscn`).
+- **Command**:
+  ```shell
+  @mcp godot-mcp run run_specific_scene --scene_path "res://test_main_scene.tscn"
+  ```
+- **Expected Outcome**: Confirmation showing the requested path. Godot launches that scene (same as pressing F6 with "Run Specific Scene").
+
+---
+
 ## Scene Tools
 
 ### get_project_info

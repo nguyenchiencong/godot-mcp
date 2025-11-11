@@ -17,7 +17,7 @@ A comprehensive integration between Godot Engine and AI assistants using the Mod
 - **Debug Output Access**: Snapshot logs with `get_debug_output` or tail them live via `stream_debug_output`
 - **Editor Automation**: Execute GDScript in editor context via `execute_editor_script`
 
-### **Debugger Integration (NEW!)**
+### **Debugger Integration**
 - **Breakpoint Management**: Set, remove, and list breakpoints across scripts with `debugger_set_breakpoint`
 - **Execution Control**: Pause, resume, and step through code with `debugger_pause_execution`, `debugger_step_over`
 - **Real-time Events**: Live notifications for breakpoint hits and execution changes
@@ -208,13 +208,13 @@ Get comprehensive debugger state information.
 
 ### Resource Endpoints:
 - `godot://script/current` - The currently open script
-- `godot://script/{path}` - Any script by path (NEW)
-- `godot://script/{path}/metadata` - Metadata (class, methods, signals) for a specific script (NEW)
+- `godot://script/{path}` - Any script by path
+- `godot://script/{path}/metadata` - Metadata (class, methods, signals) for a specific script
 - `godot://scene/current` - The currently open scene
-- `godot://scene/tree` - Complete scene tree hierarchy (NEW)
+- `godot://scene/tree` - Complete scene tree hierarchy
 - `godot://project/info` - Project metadata and settings
-- `godot://assets/{type}` - Assets of specific type (NEW)
-- `godot://debug/log` - Debug output from editor (NEW)
+- `godot://assets/{type}` - Assets of specific type
+- `godot://debug/log` - Debug output from editor
 
 ### Command Categories:
 
@@ -239,16 +239,18 @@ Get comprehensive debugger state information.
 - `save-scene` - Saves current scene
 
 #### Project Commands
-- `get-project-settings` - Gets project settings
-- `list-project-resources` - Lists project resources
+- `get_project_settings` - Gets project settings
+- `list_project_resources` - Lists project resources
+- `run_project` - Runs the project using the configured main scene
+- `run_current_scene` - Runs whichever scene is currently open in the editor
+- `run_specific_scene` - Runs a specific saved scene by resource path
+- `stop_running_project` - Stops the scene currently being played from the editor
 
 #### Editor Commands
-- `get-editor-state` - Gets current editor state
-- `run-project` - Runs the project
-- `stop-project` - Stops the running project
+- `get_editor_state` - Gets current editor state
 - `execute_editor_script` - Executes arbitrary GDScript code in the Godot editor context
 
-#### Enhanced Commands (NEW)
+#### Enhanced Commands
 - `get_editor_scene_structure` - Returns the current scene hierarchy with optional `include_properties`, `include_scripts`, and `max_depth` filters
 - `get_runtime_scene_structure` - Returns the runtime scene hierarchy from the running game (requires active debugger session)
 - `evaluate_runtime` - Evaluates a GDScript expression inside the running game via the debugger bridge (requires the runtime autoload helper)
@@ -256,7 +258,7 @@ Get comprehensive debugger state information.
 - `update_node_transform` - Updates node position, rotation, and scale
 - `list_assets_by_type` - Lists project assets by type
 
-#### Debugger Commands (NEW!)
+#### Debugger Commands
 - `debugger_set_breakpoint` - Set a breakpoint at a specific line in a script
 - `debugger_remove_breakpoint` - Remove a breakpoint from a script
 - `debugger_get_breakpoints` - List all currently set breakpoints
