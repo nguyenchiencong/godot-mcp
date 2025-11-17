@@ -37,7 +37,10 @@ func process_command(client_id: int, command_type: String, params: Dictionary, c
 		"clear_debug_output":
 			_handle_clear_debug_output(client_id, command_id)
 			return true
-	
+		"clear_editor_errors":
+			_handle_clear_editor_errors(client_id, command_id)
+			return true
+
 	# Command not handled by this processor
 	return false
 
@@ -589,6 +592,21 @@ func _handle_clear_debug_output(client_id: int, command_id: String) -> void:
 			result["message"] = "Debug Output panel cleared."
 		else:
 			result["message"] = "Debug Output panel could not be cleared automatically."
+
+	_send_success(client_id, result, command_id)
+
+func _handle_clear_editor_errors(client_id: int, command_id: String) -> void:
+	var publisher := _get_debug_output_publisher()
+	if publisher == null or not publisher.has_method("clear_errors_panel"):
+		_send_error(client_id, "Cannot clear Errors tab because the debug output publisher is unavailable.", command_id)
+		return
+
+	var result := publisher.clear_errors_panel()
+	if not result.has("message"):
+		if result.get("cleared", false):
+			result["message"] = "Errors tab cleared successfully."
+		else:
+			result["message"] = "Errors tab could not be cleared automatically."
 
 	_send_success(client_id, result, command_id)
 

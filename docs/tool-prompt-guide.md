@@ -79,6 +79,7 @@ Use this document to craft effective prompts when instructing an LLM to interact
 | `get_stack_frames_panel` | Return the structured stack frames from the debugger bridge cache (optionally request a refresh first). | `session_id` (optional number), `refresh` (optional bool) | "Give me the current call stack frames for the active session—refresh the dump first if needed." |
 | `get_editor_errors` | Read the Errors tab of the editor bottom panel to capture recent script/runtime issues. | _none_ | "Dump the Errors tab and tell me where the messages are coming from so I can triage them." |
 | `clear_debug_output` | Clear the Output panel and reset the streaming baseline before a new capture. | _none_ | "Clear the Output panel so the next debug stream only shows fresh lines." |
+| `clear_editor_errors` | Clear the Errors tab in the debugger panel to remove accumulated warnings and errors. | _none_ | "Clear the Errors tab so I can verify no new errors appear during the next test run." |
 | `update_node_transform` | Adjust a node's transform (position/rotation/scale). | `node_path` (string), `position` (optional array), `rotation` (optional number), `scale` (optional array) | "Move `./Camera` to `[512, 256]` and set rotation to `0.5`." |
 | `stream_debug_output` | Start (`action="start"`) or stop (`"stop"`) live streaming of the editor Output panel (lines arrive as `[Godot Debug] ...`). | `action` (optional string, `"start"` or `"stop"`) | "Subscribe to the debug stream so new Output lines appear live; I'll stop it afterwards." |
 

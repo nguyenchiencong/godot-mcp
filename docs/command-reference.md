@@ -680,6 +680,27 @@ Clear the editor Output panel and reset the streaming baseline so subscribers re
 - Force `stream_debug_output` subscribers to treat subsequent frames as a clean slate (a reset frame is broadcast automatically).
 - Quickly confirm that the Output panel can be controlled programmatically from an MCP workflow.
 
+### clear_editor_errors
+Clear the Errors tab in the Godot editor debugger panel.
+
+**Parameters:** None
+
+**Example**
+```
+@mcp godot-mcp run clear_editor_errors
+```
+
+**Response Contains**
+- `cleared` – `true` if the Errors tab was cleared successfully.
+- `method` – Which strategy succeeded (`tree_clear`, `tab_control_clear`, etc.).
+- `diagnostics` – Attempts, timestamp, tab title, and any errors encountered while looking for the control.
+- `message` – Human-friendly summary of the action taken.
+
+**Use Cases**
+- Clear accumulated errors before running a fresh test session.
+- Remove old warnings/errors after fixing issues to verify the tab stays empty.
+- Programmatically reset error state from an MCP workflow.
+
 ### update_node_transform
 Adjust a node’s position, rotation, or scale from the editor.
 

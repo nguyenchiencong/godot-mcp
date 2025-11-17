@@ -257,6 +257,7 @@ Get comprehensive debugger state information.
 - `get_stack_frames_panel` - Returns structured stack frame information from the debugger bridge cache
 - `get_editor_errors` - Reads the Errors tab from the Godot editor bottom panel
 - `clear_debug_output` - Clears the Output panel and resets streaming baselines
+- `clear_editor_errors` - Clears the Errors tab in the debugger panel
 - `stream_debug_output` - Subscribes to or unsubscribes from live Output panel streaming
 - `update_node_transform` - Updates node position, rotation, and scale
 - `list_assets_by_type` - Lists project assets by type

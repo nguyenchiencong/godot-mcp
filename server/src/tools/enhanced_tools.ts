@@ -609,4 +609,43 @@ export const enhancedTools: MCPTool[] = [
       return 'Unsubscribed from live debug output.';
     },
   },
+  {
+    name: 'clear_editor_errors',
+    description: 'Clear the Errors tab in the Godot editor debugger panel.',
+    parameters: z.object({}),
+    execute: async (): Promise<string> => {
+      const godot = getGodotConnection();
+
+      try {
+        const result = await godot.sendCommand('clear_editor_errors', {});
+        const diagnostics = safeGetDiagnostics(result);
+
+        if (!result?.cleared) {
+          const reason = typeof result?.message === 'string' && result.message.length > 0
+            ? result.message
+            : (diagnostics.error || 'Unknown reason');
+          return `Failed to clear Errors tab: ${reason}`;
+        }
+
+        const method = typeof result.method === 'string' && result.method.length > 0
+          ? result.method
+          : 'unspecified method';
+        const attempts = Array.isArray(diagnostics.attempts)
+          ? diagnostics.attempts.map(entry => String(entry)).join(', ')
+          : 'n/a';
+        const timestamp = typeof diagnostics.timestamp === 'number'
+          ? new Date(diagnostics.timestamp).toISOString()
+          : 'n/a';
+
+        return [
+          'Errors tab cleared successfully.',
+          `Method: ${method}`,
+          `Attempts: ${attempts}`,
+          `Timestamp: ${timestamp}`
+        ].join('\n');
+      } catch (err) {
+        throw new Error(`Failed to clear Errors tab: ${(err as Error).message}`);
+      }
+    },
+  },
 ];

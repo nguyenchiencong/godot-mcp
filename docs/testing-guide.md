@@ -210,6 +210,14 @@ All examples assume:
   ```
 - **Expected Outcome**: `cleared: true`, a non-empty `method` (such as `editor_log_clear`), and diagnostics confirming the timestamp/attempted strategies. Subsequent calls to `stream_debug_output` should report a reset frame.
 
+### clear_editor_errors
+- **Setup**: Trigger some errors (e.g., run a scene with script errors or use `push_error()`) so the Errors tab has content.
+- **Command**:
+  ```shell
+  @mcp godot-mcp run clear_editor_errors
+  ```
+- **Expected Outcome**: `cleared: true`, a `method` indicating which strategy worked (e.g., `tree_clear`), and diagnostics with the tab title and timestamp. The Errors tab should be empty after the command.
+
 ### get_runtime_scene_structure
 - **Setup**: Run the project (or attach the debugger) so that a runtime session is active.
 - **Command**:

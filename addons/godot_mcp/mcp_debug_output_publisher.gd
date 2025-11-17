@@ -618,6 +618,74 @@ func _broadcast_log_reset() -> void:
 func get_errors_panel_snapshot() -> Dictionary:
 	return _capture_errors_tab_text()
 
+func clear_errors_panel() -> Dictionary:
+	var diagnostics := {
+		"timestamp": Time.get_ticks_msec(),
+		"attempts": []
+	}
+
+	if not Engine.is_editor_hint():
+		diagnostics["error"] = "not_in_editor"
+		return {
+			"cleared": false,
+			"method": "editor_only",
+			"diagnostics": diagnostics
+		}
+
+	var cleared := false
+	var method_used := ""
+
+	var search_roots := _gather_editor_search_roots()
+	var tab_info := {}
+	for root in search_roots:
+		tab_info = _find_errors_tab_control(root)
+		if tab_info.has("control"):
+			break
+
+	if not tab_info.has("control"):
+		diagnostics["error"] = "errors_tab_not_found"
+		return {
+			"cleared": false,
+			"method": "not_found",
+			"diagnostics": diagnostics
+		}
+
+	var tab_control: Control = tab_info.get("control")
+	if not is_instance_valid(tab_control):
+		diagnostics["error"] = "tab_control_invalid"
+		return {
+			"cleared": false,
+			"method": "invalid_control",
+			"diagnostics": diagnostics
+		}
+
+	diagnostics["tab_title"] = tab_info.get("tab_title", "")
+	diagnostics["attempts"].append("found_tab=%s" % tab_info.get("tab_title", ""))
+
+	var tree := _find_descendant_tree(tab_control)
+	if is_instance_valid(tree):
+		diagnostics["attempts"].append("tree_control")
+		if tree.has_method("clear"):
+			tree.call("clear")
+			cleared = true
+			method_used = "tree_clear"
+			diagnostics["tree_path"] = String(tree.get_path()) if tree.is_inside_tree() else ""
+
+	if not cleared and tab_control.has_method("clear"):
+		diagnostics["attempts"].append("tab_control_clear")
+		tab_control.call("clear")
+		cleared = true
+		method_used = "tab_control_clear"
+
+	diagnostics["cleared"] = cleared
+	diagnostics["method"] = method_used
+
+	return {
+		"cleared": cleared,
+		"method": method_used,
+		"diagnostics": diagnostics
+	}
+
 func get_stack_trace_snapshot(session_id: int = -1) -> Dictionary:
 	return _capture_stack_trace_panel(session_id)
 

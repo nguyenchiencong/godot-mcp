@@ -1,6 +1,16 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.  
+All notable changes to this project will be documented in this file.
+
+## 2025-11-17
+
+### Added
+- `clear_editor_errors` tool/command to clear the Errors tab in the Godot editor debugger panel, complementing the existing `get_editor_errors` and `clear_debug_output` tools.
+- Test file `server/tests/editor-errors.test.js` to verify `get_editor_errors` and `clear_editor_errors` functionality.
+- Documentation updates for `clear_editor_errors` in command-reference.md, README.md, testing-guide.md, and tool-prompt-guide.md.
+
+### Fixed
+- Updated command handler to properly route all enhanced commands (including `get_editor_errors`, `clear_editor_errors`, `clear_debug_output`, etc.) to the enhanced commands processor.
 
 ## 2025-11-15
 
